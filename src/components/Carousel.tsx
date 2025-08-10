@@ -68,23 +68,16 @@ export const Carousel: React.FC<Props> = ({
             transition: `transform ${animationDuration}ms ease-out`,
           }}
         >
-          {images.map((image, index) => {
-            const isVisible =
-              index >= firstVisibleIndex &&
-              index < firstVisibleIndex + frameSize;
-
-            return (
-              <li
-                key={index}
-                style={{
-                  width: `${itemWidth}px`,
-                  visibility: isVisible ? 'visible' : 'hidden',
-                }}
-              >
-                <img src={image} alt="carousel item" width={itemWidth} />
-              </li>
-            );
-          })}
+          {images.map((image, index) => (
+            <li
+              key={index}
+              style={{
+                width: `${itemWidth}px`,
+              }}
+            >
+              <img src={image} alt="carousel item" width={itemWidth} />
+            </li>
+          ))}
         </ul>
       </div>
 
