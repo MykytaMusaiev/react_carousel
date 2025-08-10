@@ -8,6 +8,7 @@ interface Props {
   frameSize?: number;
   step?: number;
   animationDuration?: number;
+  infinite?: boolean;
 }
 
 export const Carousel: React.FC<Props> = ({
@@ -16,25 +17,39 @@ export const Carousel: React.FC<Props> = ({
   frameSize = 3,
   step = 3,
   animationDuration = 1000,
+  infinite = false,
 }) => {
   const [firstVisibleIndex, setFirstVisibleIndex] = useState(0);
 
   const maxIndex = images.length - frameSize;
-  const canGoPrev = firstVisibleIndex > 0;
-  const canGoNext = firstVisibleIndex < maxIndex;
+  const canGoPrev = infinite || firstVisibleIndex > 0;
+  const canGoNext = infinite || firstVisibleIndex < maxIndex;
 
   const offset = -firstVisibleIndex * itemWidth;
 
   const handlePrev = () => {
-    const newIndex = Math.max(0, firstVisibleIndex - step);
+    if (infinite) {
+      const newIndex =
+        (firstVisibleIndex - step + images.length) % images.length;
 
-    setFirstVisibleIndex(newIndex);
+      setFirstVisibleIndex(newIndex);
+    } else {
+      const newIndex = Math.max(0, firstVisibleIndex - step);
+
+      setFirstVisibleIndex(newIndex);
+    }
   };
 
   const handleNext = () => {
-    const newIndex = Math.min(firstVisibleIndex + step, maxIndex);
+    if (infinite) {
+      const newIndex = (firstVisibleIndex + step) % images.length;
 
-    setFirstVisibleIndex(newIndex);
+      setFirstVisibleIndex(newIndex);
+    } else {
+      const newIndex = Math.min(firstVisibleIndex + step, maxIndex);
+
+      setFirstVisibleIndex(newIndex);
+    }
   };
 
   return (
@@ -60,7 +75,7 @@ export const Carousel: React.FC<Props> = ({
 
             return (
               <li
-                key={image}
+                key={index}
                 style={{
                   width: `${itemWidth}px`,
                   visibility: isVisible ? 'visible' : 'hidden',
